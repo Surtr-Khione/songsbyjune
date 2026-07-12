@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Someone made you a song 🎁</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Karla:wght@400;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  body { display: flex; min-height: 100vh; flex-direction: column; }
+  main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 30px 18px; }
+  .stage { max-width: 480px; width: 100%; text-align: center; }
+  .stage h1 { font-size: 34px; margin: 14px 0 10px; }
+  .stage p { color: var(--ink-soft); }
+  .gift { font-size: 74px; }
+  .screen { display: none; }
+  .screen.on { display: block; animation: fade .5s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  video#preview { width: 100%; border-radius: 18px; background: #000; transform: scaleX(-1); box-shadow: var(--shadow); }
+  video#playback { width: 100%; border-radius: 18px; background: #000; box-shadow: var(--shadow); }
+  .recbar { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px 0; font-weight: 800; color: var(--terra-deep); }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #E03E2F; animation: blink 1.1s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .btncol { display: flex; flex-direction: column; gap: 12px; margin-top: 22px; }
+  .lyrics { text-align: left; white-space: pre-wrap; background: var(--paper); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px; margin-top: 18px; font-family: 'Fraunces', serif; font-size: 16px; }
+  .consent { text-align: left; display: flex; gap: 10px; align-items: flex-start; margin: 16px 0 4px; font-size: 14px; color: var(--ink-soft); }
+  .consent input { margin-top: 4px; }
+  .offer { background: var(--paper); border: 1px dashed var(--kraft); border-radius: 16px; padding: 22px; margin-top: 26px; }
+  .offer .code { font-family: 'Fraunces', serif; font-size: 22px; letter-spacing: .06em; }
+  audio { width: 100%; margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+<div class="stage">
+
+  <div class="screen on" id="s-loading"><div class="gift">🎁</div><p>Opening your gift...</p></div>
+
+  <div class="screen" id="s-notready">
+    <div class="gift">🎼</div>
+    <h1>Almost ready!</h1>
+    <p id="notready-copy">June is putting the finishing touches on something made just for you. Check back soon.</p>
+  </div>
+
+  <div class="screen" id="s-reveal">
+    <div class="gift">🎁</div>
+    <h1 id="reveal-title"></h1>
+    <p>Not a card. Not a gift card. A real song, written about you, your stories, your people.</p>
+    <div class="btncol"><button class="btn big" id="to-primer">Open my song</button></div>
+  </div>
+
+  <div class="screen" id="s-primer">
+    <div class="gift">📸</div>
+    <h1>One question first...</h1>
+    <p id="primer-copy"></p>
+    <p style="font-size:14px;margin-top:10px">You will see yourself the whole time, and you review the video before anything is sent. Nothing is shared without your OK.</p>
+    <div class="btncol">
+      <button class="btn big" id="go-record">🎥 Yes, record my reaction</button>
+      <button class="btn ghost" id="go-plain">Just play my song</button>
+    </div>
+  </div>
+
+  <div class="screen" id="s-record">
+    <video id="preview" autoplay muted playsinline></video>
+    <div class="recbar" id="recbar" style="visibility:hidden"><span class="dot"></span><span id="rectime">0:00</span> · recording for <span id="rec-buyer"></span></div>
+    <div class="btncol">
+      <button class="btn big" id="play-and-record">▶ Play my song</button>
+      <button class="btn ghost" id="finish-early" style="display:none">Finish</button>
+    </div>
+  </div>
+
+  <div class="screen" id="s-review">
+    <h1 style="font-size:26px">That was wonderful. 🥹</h1>
+    <p>Here is your reaction. Want to send it back as a thank-you?</p>
+    <video id="playback" controls playsinline></video>
+    <label class="consent"><input type="checkbox" id="share-ok"><span>It is also OK for Songs by June to feature this clip on social media. (Totally optional. Your song is yours either way.)</span></label>
+    <div class="btncol">
+      <button class="btn big" id="send-reaction">💌 Send it to <span id="send-buyer"></span></button>
+      <button class="btn ghost" id="skip-send">Don't send it</button>
+    </div>
+  </div>
+
+  <div class="screen" id="s-song">
+    <div class="gift">🎶</div>
+    <h1 id="song-title"></h1>
+    <audio id="song" controls preload="auto"></audio>
+    <div id="lyrics" class="lyrics" style="display:none"></div>
+    <div class="btncol">
+      <button class="btn ghost" id="toggle-lyrics">Read the lyrics</button>
+    </div>
+    <div class="offer">
+      <p style="font-size:15px"><b>Know whose birthday is next?</b><br>Now you know the best gift on earth. Here is <b>$10 off</b> a song for them:</p>
+      <div class="code" id="share-code"></div>
+      <div class="btncol">
+        <a class="btn" id="send-one-back" href="../">Make someone a song · $10 off</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+</main>
+<footer><div class="wrap" style="text-align:center"><span class="hand" style="font-size:20px">Songs by June</span> · every song written from a true story</div></footer>
+
+<script>
+const API = 'https://bukgitgwwmzdjibekmzb.supabase.co/functions/v1';
+const t = new URLSearchParams(location.search).get('t');
+let order = null, mediaStream = null, recorder = null, chunks = [], blob = null, mime = '', recStart = 0, timerId = null;
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+const $ = id => document.getElementById(id);
+
+function pickMime() {
+  const prefs = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'];
+  for (const p of prefs) if (window.MediaRecorder && MediaRecorder.isTypeSupported(p)) return p;
+  return '';
+}
+
+async function init() {
+  if (!t) { show('s-notready'); $('notready-copy').textContent = 'This link seems incomplete. Ask the sender to resend it.'; return; }
+  try {
+    const r = await fetch(`${API}/bday-order?t=${encodeURIComponent(t)}`);
+    order = await r.json();
+  } catch { order = null; }
+  if (!order || order.error) { show('s-notready'); $('notready-copy').textContent = 'We could not find this song. Ask the sender to resend the link.'; return; }
+  if (!order.ready) {
+    $('notready-copy').textContent = `June is putting the finishing touches on a song ${order.buyer_name} asked her to write for you. Check back in a little while!`;
+    show('s-notready'); return;
+  }
+  $('reveal-title').textContent = `${order.buyer_name} had a song written just for you, ${order.recipient_name}.`;
+  $('primer-copy').textContent = `Would you like ${order.buyer_name} to see your face when you hear it for the first time? We will record you while the song plays and send it only to ${order.buyer_name}.`;
+  $('rec-buyer').textContent = order.buyer_name;
+  $('send-buyer').textContent = order.buyer_name;
+  $('song-title').textContent = `Happy birthday, ${order.recipient_name}. 🎂`;
+  $('song').src = order.song_url;
+  if (order.song_lyrics) $('lyrics').textContent = order.song_lyrics;
+  else $('toggle-lyrics').style.display = 'none';
+  $('share-code').textContent = order.share_code;
+  $('send-one-back').href = `../?code=${encodeURIComponent(order.share_code)}`;
+  show('s-reveal');
+}
+
+$('to-primer').addEventListener('click', () => {
+  // camera-capable browsers get the primer; others go straight to the song
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && pickMime()) show('s-primer');
+  else playPlain();
+});
+$('go-plain').addEventListener('click', playPlain);
+
+function playPlain() {
+  show('s-song');
+  logPlay();
+  $('song').play().catch(() => {});
+}
+
+$('go-record').addEventListener('click', async () => {
+  try {
+    mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: true });
+    $('preview').srcObject = mediaStream;
+    show('s-record');
+  } catch {
+    // permission denied or unavailable: never block the gift
+    playPlain();
+  }
+});
+
+$('play-and-record').addEventListener('click', () => {
+  // one gesture starts both playback and recording (autoplay policy)
+  mime = pickMime();
+  chunks = [];
+  try { recorder = new MediaRecorder(mediaStream, mime ? { mimeType: mime } : undefined); }
+  catch { recorder = new MediaRecorder(mediaStream); }
+  recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = onRecorded;
+  recorder.start(); // single blob; older Safari only fires dataavailable on stop
+  recStart = Date.now();
+  const song = $('song');
+  song.play().catch(() => {});
+  logPlay();
+  song.onended = stopRec;
+  $('play-and-record').style.display = 'none';
+  $('finish-early').style.display = 'inline-block';
+  $('recbar').style.visibility = 'visible';
+  timerId = setInterval(() => {
+    const s = Math.floor((Date.now() - recStart) / 1000);
+    $('rectime').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+    if (s > 300) stopRec(); // hard cap 5 min
+  }, 500);
+});
+
+$('finish-early').addEventListener('click', stopRec);
+
+function stopRec() {
+  clearInterval(timerId);
+  if (recorder && recorder.state !== 'inactive') recorder.stop();
+  $('song').pause();
+}
+
+function onRecorded() {
+  if (mediaStream) mediaStream.getTracks().forEach(tr => tr.stop());
+  blob = new Blob(chunks, { type: recorder.mimeType || mime || 'video/webm' });
+  $('playback').src = URL.createObjectURL(blob);
+  show('s-review');
+}
+
+$('send-reaction').addEventListener('click', async () => {
+  const btn = $('send-reaction');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    const ext = (blob.type.includes('mp4')) ? 'mp4' : 'webm';
+    const start = await fetch(`${API}/bday-reaction`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'start', t, ext })
+    }).then(r => r.json());
+    if (!start.upload_url) throw new Error('no upload url');
+    const up = await fetch(start.upload_url, { method: 'PUT', headers: { 'Content-Type': blob.type }, body: blob });
+    if (!up.ok) throw new Error('upload failed');
+    await fetch(`${API}/bday-reaction`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'complete', t, path: start.path,
+        duration: Math.round((Date.now() - recStart) / 1000),
+        share_ok: $('share-ok').checked
+      })
+    });
+    playPlain();
+  } catch {
+    btn.disabled = false; btn.textContent = 'Try sending again';
+  }
+});
+$('skip-send').addEventListener('click', playPlain);
+
+$('toggle-lyrics').addEventListener('click', () => {
+  const l = $('lyrics');
+  l.style.display = l.style.display === 'none' ? 'block' : 'none';
+});
+$('send-one-back').addEventListener('click', () => {
+  fetch(`${API}/bday-order`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'share_clicked', t, surface: 'recipient_offer' }) }).catch(() => {});
+});
+let played = false;
+function logPlay() {
+  if (played) return; played = true;
+  fetch(`${API}/bday-order`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'song_played', t }) }).catch(() => {});
+}
+
+init();
+</script>
+</body>
+</html>

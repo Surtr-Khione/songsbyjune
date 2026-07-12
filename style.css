@@ -1,0 +1,96 @@
+/* Songs by June — warm, human, handcrafted. Cream / terracotta / kraft. */
+:root {
+  --cream: #FAF4E9;
+  --paper: #FFFDF8;
+  --ink: #33271A;
+  --ink-soft: #6B5B48;
+  --terra: #C4644A;
+  --terra-deep: #A54B35;
+  --kraft: #B8997A;
+  --line: #E8DCC8;
+  --gold: #D9A441;
+  --shadow: 0 10px 30px rgba(70, 45, 25, 0.12);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Karla', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  font-size: 17px;
+}
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; font-weight: 600; line-height: 1.15; }
+.hand { font-family: 'Caveat', cursive; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 22px; }
+a { color: var(--terra-deep); }
+
+.btn {
+  display: inline-block; border: none; cursor: pointer; text-decoration: none;
+  background: var(--terra); color: #fff; font-family: 'Karla', sans-serif;
+  font-size: 17px; font-weight: 700; padding: 15px 30px; border-radius: 40px;
+  box-shadow: 0 6px 18px rgba(196, 100, 74, 0.35);
+  transition: transform .15s ease, background .15s ease;
+}
+.btn:hover { background: var(--terra-deep); transform: translateY(-1px); }
+.btn.big { font-size: 19px; padding: 18px 38px; }
+.btn.ghost {
+  background: transparent; color: var(--terra-deep); box-shadow: none;
+  border: 2px solid var(--terra); padding: 13px 28px;
+}
+.btn.ghost:hover { background: rgba(196,100,74,.08); }
+.btn:disabled { opacity: .5; cursor: default; transform: none; }
+
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0;
+}
+nav .logo { font-family: 'Caveat', cursive; font-size: 30px; font-weight: 700; color: var(--ink); text-decoration: none; }
+nav .links a { margin-left: 26px; text-decoration: none; color: var(--ink-soft); font-weight: 700; font-size: 15px; }
+nav .links a.btn { color: #fff; padding: 10px 22px; font-size: 15px; }
+
+.eyebrow {
+  display: inline-block; font-size: 13px; font-weight: 800; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--terra-deep); margin-bottom: 14px;
+}
+.card {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 18px;
+  padding: 28px; box-shadow: var(--shadow);
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 7px; background: var(--paper);
+  border: 1px solid var(--line); border-radius: 30px; padding: 8px 16px;
+  font-size: 14px; font-weight: 700; color: var(--ink-soft);
+}
+
+/* form bits */
+label { display: block; font-weight: 800; font-size: 14px; margin: 18px 0 6px; color: var(--ink); }
+input[type=text], input[type=email], textarea, select {
+  width: 100%; padding: 13px 15px; border: 1.5px solid var(--line); border-radius: 12px;
+  font-family: 'Karla', sans-serif; font-size: 16px; background: #fff; color: var(--ink);
+}
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--terra); }
+textarea { min-height: 110px; resize: vertical; }
+.hint { font-size: 13px; color: var(--ink-soft); margin-top: 5px; }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 9px; }
+.pill {
+  border: 1.5px solid var(--line); background: #fff; border-radius: 30px;
+  padding: 9px 18px; font-size: 15px; font-weight: 700; cursor: pointer; color: var(--ink-soft);
+}
+.pill.on { background: var(--terra); border-color: var(--terra); color: #fff; }
+
+.progress { display: flex; gap: 6px; margin-bottom: 22px; }
+.progress span { flex: 1; height: 5px; border-radius: 3px; background: var(--line); }
+.progress span.on { background: var(--terra); }
+
+footer {
+  margin-top: 90px; padding: 40px 0 50px; border-top: 1px solid var(--line);
+  color: var(--ink-soft); font-size: 14px;
+}
+footer a { color: var(--ink-soft); }
+
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  nav .links a:not(.btn) { display: none; }
+}

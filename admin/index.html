@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>June's Desk</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Karla:wght@400;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+<style>
+  main { max-width: 860px; margin: 0 auto; padding: 30px 18px; }
+  .order { margin-bottom: 14px; }
+  .order .head { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+  .badge { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 12px; background: var(--line); }
+  .badge.paid { background: #F6D8A8; } .badge.delivered { background: #CBE3C0; } .badge.reacted { background: #F4C7BC; }
+  .body { display: none; border-top: 1px solid var(--line); margin-top: 14px; padding-top: 14px; }
+  .order.open .body { display: block; }
+  pre { white-space: pre-wrap; background: var(--cream); padding: 14px; border-radius: 10px; font-size: 13px; }
+  .row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .stat { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 10px 16px; font-size: 13px; }
+  .stat b { display: block; font-size: 20px; font-family: 'Fraunces', serif; }
+</style>
+</head>
+<body>
+<main>
+  <h1 style="font-family:'Fraunces',serif">June's Desk 🎛</h1>
+  <div id="auth"><label>Admin key</label><input type="text" id="key"><div class="row"><button class="btn" id="save-key">Enter</button></div></div>
+  <div id="desk" style="display:none">
+    <div class="stats" id="stats"></div>
+    <div class="row" style="margin-bottom:16px">
+      <button class="btn ghost f" data-f="">All</button>
+      <button class="btn ghost f" data-f="paid">🔥 Production queue</button>
+      <button class="btn ghost f" data-f="delivered">Delivered</button>
+      <button class="btn ghost f" data-f="reacted">Reacted</button>
+    </div>
+    <div id="orders"></div>
+  </div>
+</main>
+<script>
+const API = 'https://bukgitgwwmzdjibekmzb.supabase.co/functions/v1';
+let KEY = localStorage.getItem('bday_admin_key') || '';
+const $ = id => document.getElementById(id);
+const hdr = () => ({ 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' });
+
+$('save-key').onclick = () => { KEY = $('key').value.trim(); localStorage.setItem('bday_admin_key', KEY); boot(); };
+document.querySelectorAll('.f').forEach(b => b.onclick = () => load(b.dataset.f));
+
+async function boot() {
+  if (!KEY) return;
+  const ok = await load('');
+  if (!ok) return;
+  $('auth').style.display = 'none';
+  $('desk').style.display = 'block';
+  const s = await fetch(`${API}/bday-admin?stats=1`, { headers: hdr() }).then(r => r.json());
+  if (s.last_30d) {
+    const keys = ['paid','delivered','song_played','reaction_recorded','share_clicked','referral_converted'];
+    $('stats').innerHTML = keys.map(k => `<div class="stat"><b>${s.last_30d[k] || 0}</b>${k.replace(/_/g,' ')}</div>`).join('');
+  }
+}
+
+async function load(f) {
+  const r = await fetch(`${API}/bday-admin${f ? '?status=' + f : ''}`, { headers: hdr() });
+  if (r.status === 401) { alert('Bad key'); return false; }
+  const { orders } = await r.json();
+  $('orders').innerHTML = (orders || []).map(render).join('') || '<p>No orders here yet.</p>';
+  document.querySelectorAll('.order .head').forEach(h => h.onclick = () => h.parentElement.classList.toggle('open'));
+  document.querySelectorAll('[data-act]').forEach(b => b.onclick = () => act(b));
+  return true;
+}
+
+function sunoPrompt(o) {
+  const b = o.brief || {};
+  return `[Style prompt for Suno custom mode]\n${o.genre || 'warm acoustic'}, heartfelt birthday song, ${b.mood || ''}, clear vocals, radio quality\n\n[Write lyrics from this brief]\nRecipient: ${o.recipient_name} (${o.relationship || '?'} of ${o.buyer_name})\nOccasion: ${b.occasion || 'birthday'}\nWhat they love about them: ${b.love || '-'}\nDetails and inside jokes to include: ${b.details || '-'}\nMood: ${b.mood || '-'}\nNotes: ${b.notes || '-'}\n\nRules: use the real details verbatim (names, nicknames, places). 2 verses, chorus x2, bridge. Singable, warm, zero generic filler lines.`;
+}
+
+function render(o) {
+  const d = new Date(o.created_at).toLocaleString();
+  return `<div class="card order" data-id="${o.id}">
+    <div class="head"><div><b>${o.recipient_name}</b> ← ${o.buyer_name} · ${o.tier} · $${(o.amount_cents||0)/100}<br><span style="font-size:12px;color:var(--ink-soft)">${d} · ${o.buyer_email}</span></div>
+    <span class="badge ${o.status}">${o.status}</span></div>
+    <div class="body">
+      <pre>${JSON.stringify(o.brief, null, 1)}</pre>
+      <div class="row">
+        <button class="btn ghost" data-act="prompt">📋 Copy Suno prompt</button>
+        <button class="btn ghost" data-act="upload">⬆️ Upload song file</button>
+        <input type="file" accept="audio/*" style="display:none" class="file">
+      </div>
+      <label>Lyrics</label><textarea class="lyr">${o.song_lyrics || ''}</textarea>
+      <label>Song URL</label><input type="text" class="surl" value="${o.song_url || ''}">
+      <div class="row">
+        <button class="btn ghost" data-act="save">Save</button>
+        <button class="btn" data-act="deliver">✅ Save + mark delivered</button>
+        <a class="btn ghost" href="../s/?t=${o.delivery_token}" target="_blank">Recipient page</a>
+        <a class="btn ghost" href="../my/?m=${o.manage_token}" target="_blank">Buyer page</a>
+      </div>
+    </div></div>`;
+}
+
+async function act(btn) {
+  const card = btn.closest('.order');
+  const id = card.dataset.id;
+  const o = { id };
+  if (btn.dataset.act === 'prompt') {
+    const r = await fetch(`${API}/bday-admin`, { headers: hdr() });
+    const { orders } = await r.json();
+    const full = orders.find(x => x.id === id);
+    navigator.clipboard.writeText(sunoPrompt(full));
+    btn.textContent = 'Copied!';
+    return;
+  }
+  if (btn.dataset.act === 'upload') {
+    const fi = card.querySelector('.file');
+    fi.onchange = async () => {
+      const f = fi.files[0]; if (!f) return;
+      btn.textContent = 'Uploading...';
+      const ext = f.name.split('.').pop().toLowerCase();
+      const s = await fetch(`${API}/bday-admin`, { method: 'POST', headers: hdr(),
+        body: JSON.stringify({ action: 'song_upload_url', order_id: id, ext }) }).then(r => r.json());
+      await fetch(s.upload_url, { method: 'PUT', headers: { 'Content-Type': f.type || 'audio/mpeg' }, body: f });
+      card.querySelector('.surl').value = s.public_url;
+      btn.textContent = '⬆️ Uploaded ✓';
+    };
+    fi.click();
+    return;
+  }
+  const patch = { action: 'update', order_id: id, song_lyrics: card.querySelector('.lyr').value, song_url: card.querySelector('.surl').value };
+  if (btn.dataset.act === 'deliver') patch.status = 'delivered';
+  await fetch(`${API}/bday-admin`, { method: 'POST', headers: hdr(), body: JSON.stringify(patch) });
+  btn.textContent = 'Saved ✓';
+}
+if (KEY) { $('key').value = KEY; boot(); }
+</script>
+</body>
+</html>

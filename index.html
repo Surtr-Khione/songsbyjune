@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Songs by June | A custom birthday song about them, in their hands by tonight</title>
+<meta name="description" content="June turns your stories, memories, and inside jokes into a real custom birthday song. Delivered in hours, not weeks. From $39.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Karla:wght@400;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; padding: 46px 0 70px; }
+  .hero h1 { font-size: 52px; margin-bottom: 18px; }
+  .hero h1 em { font-style: normal; color: var(--terra-deep); }
+  .hero p.lead { font-size: 19px; color: var(--ink-soft); margin-bottom: 28px; max-width: 480px; }
+  .portrait { position: relative; }
+  .portrait img { width: 100%; border-radius: 22px; box-shadow: var(--shadow); display: block; }
+  .portrait .tape { position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+    background: rgba(217,164,65,.35); width: 110px; height: 30px; border-radius: 3px; }
+  .portrait .caption { position: absolute; bottom: -18px; right: 14px; background: var(--paper);
+    border: 1px solid var(--line); border-radius: 12px; padding: 8px 16px; font-size: 20px; box-shadow: var(--shadow); }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+  section { padding: 55px 0; }
+  .sec-title { font-size: 36px; margin-bottom: 12px; }
+  .sec-sub { color: var(--ink-soft); max-width: 620px; margin-bottom: 34px; }
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .steps .card b.num { font-family: 'Caveat', cursive; font-size: 40px; color: var(--terra); display: block; line-height: 1; }
+  .steps .card h3 { font-size: 21px; margin: 10px 0 8px; }
+  .steps .card p { font-size: 15px; color: var(--ink-soft); }
+  .reaction { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .reaction .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; align-items: center; }
+  .phone { background: var(--ink); border-radius: 26px; padding: 14px 12px 18px; color: var(--cream); max-width: 300px; margin: 0 auto; box-shadow: var(--shadow); }
+  .phone .screen { background: #4a3626; border-radius: 16px; padding: 22px 16px; text-align: center; }
+  .phone .screen .rec { color: #ff6b5e; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+  .phone .screen .face { font-size: 56px; margin: 14px 0; }
+  .tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+  .tier { position: relative; display: flex; flex-direction: column; }
+  .tier.popular { border: 2px solid var(--terra); }
+  .tier .flag { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: var(--terra);
+    color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .08em; padding: 4px 14px; border-radius: 20px; }
+  .tier h3 { font-size: 22px; }
+  .tier .price { font-family: 'Fraunces', serif; font-size: 40px; margin: 8px 0 2px; }
+  .tier .when { font-size: 13px; font-weight: 800; color: var(--terra-deep); margin-bottom: 14px; }
+  .tier ul { list-style: none; margin: 0 0 22px; flex: 1; }
+  .tier li { font-size: 15px; color: var(--ink-soft); padding: 6px 0 6px 26px; position: relative; }
+  .tier li::before { content: "♪"; position: absolute; left: 4px; color: var(--terra); }
+  .june { display: grid; grid-template-columns: .8fr 1.2fr; gap: 44px; align-items: center; }
+  .note { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 34px 38px;
+    box-shadow: var(--shadow); font-size: 18px; color: var(--ink); }
+  .note .hand { font-size: 26px; }
+  .note p { margin-bottom: 14px; }
+  .sig { font-family: 'Caveat', cursive; font-size: 34px; color: var(--terra-deep); }
+  details { border-bottom: 1px solid var(--line); padding: 16px 0; }
+  details summary { font-weight: 800; cursor: pointer; font-size: 17px; }
+  details p { color: var(--ink-soft); padding-top: 10px; max-width: 640px; }
+  .guarantee { text-align: center; background: var(--paper); border: 1px dashed var(--kraft); border-radius: 18px; padding: 36px; }
+  /* order overlay */
+  #order { position: fixed; inset: 0; background: rgba(51,39,26,.45); display: none; z-index: 50; overflow-y: auto; padding: 30px 16px; }
+  #order.open { display: block; }
+  #order .panel { background: var(--cream); border-radius: 20px; max-width: 560px; margin: 0 auto; padding: 30px 30px 36px; position: relative; }
+  #order .close { position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 26px; cursor: pointer; color: var(--ink-soft); }
+  .step { display: none; } .step.on { display: block; }
+  .stepnav { display: flex; justify-content: space-between; margin-top: 26px; }
+  .tier-pick { border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; background: #fff; display: flex; justify-content: space-between; align-items: center; }
+  .tier-pick.on { border-color: var(--terra); background: rgba(196,100,74,.06); }
+  .tier-pick b { font-size: 16px; } .tier-pick span { font-size: 13px; color: var(--ink-soft); display: block; }
+  .tier-pick .p { font-family: 'Fraunces', serif; font-size: 22px; }
+  @media (max-width: 820px) {
+    .hero, .reaction .grid, .june { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 38px; }
+    .steps, .tiers { grid-template-columns: 1fr; }
+    .portrait { max-width: 340px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="./">Songs by June</a>
+    <div class="links">
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#june">Meet June</a>
+      <a href="#" class="btn open-order">Start their song</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div>
+      <span class="eyebrow">Custom birthday songs, written from your story</span>
+      <h1>A song about <em>them</em>.<br>In their hands <em>by tonight</em>.</h1>
+      <p class="lead">Tell June the story. The nickname only their dad uses. The road trip that went sideways. She turns it into a real song they will play for the rest of their life.</p>
+      <a href="#" class="btn big open-order">Start their song · from $39</a>
+      <div class="chips">
+        <span class="chip">🕐 Delivered in hours, not weeks</span>
+        <span class="chip">💌 You hear it before they do</span>
+        <span class="chip">😭 The Happy Tears Guarantee</span>
+      </div>
+      <div style="margin-top:26px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 20px;max-width:480px">
+        <div style="font-weight:800;font-size:14px;margin-bottom:2px">🎧 Hear a sample</div>
+        <div class="hint" style="margin:0 0 8px">"Maria's Song (Sixty Looks Good on You)" · written for a 60th birthday</div>
+        <audio controls preload="none" style="width:100%" src="assets/sample.mp3"></audio>
+      </div>
+    </div>
+    <div class="portrait">
+      <div class="tape"></div>
+      <img src="assets/june.jpg" alt="June, songwriter, in her home studio with her guitar">
+      <div class="caption hand">June · your songwriter</div>
+    </div>
+  </header>
+</div>
+
+<section class="reaction">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">The part nobody else gives you</span>
+      <h2 class="sec-title">You get to watch them hear it.</h2>
+      <p class="sec-sub">When they press play, we invite them to share their reaction on camera, just for you. The gasp. The laugh at the inside joke in verse two. The happy tears. That moment lands in your inbox, yours to keep forever.</p>
+      <p class="sec-sub"><b>A birthday gift usually lasts a day. The video of your mom crying at her own song does not.</b></p>
+    </div>
+    <div class="phone">
+      <div class="screen">
+        <div class="rec">● REC</div>
+        <div class="face">🥹</div>
+        <div class="hand" style="font-size:22px">"Wait... is this song about ME?"</div>
+        <p style="font-size:12px;opacity:.7;margin-top:10px">Maria's reaction · 0:42</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <section id="how">
+    <span class="eyebrow">How it works</span>
+    <h2 class="sec-title">Three steps. About two minutes of your time.</h2>
+    <div class="steps">
+      <div class="card"><b class="num">1.</b><h3>Tell June the story</h3><p>Who they are to you, what you love about them, the details and inside jokes that make them them. Two minutes, a few questions.</p></div>
+      <div class="card"><b class="num">2.</b><h3>June writes their song</h3><p>Your words become lyrics, the lyrics become a full studio-quality song in the style you pick. June listens to every second before it ships.</p></div>
+      <div class="card"><b class="num">3.</b><h3>They play it. You watch.</h3><p>You get a private link to send on the big day. They press play, and if they choose, you get their reaction on video.</p></div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <span class="eyebrow">Pricing</span>
+    <h2 class="sec-title">Less than flowers. Remembered forever.</h2>
+    <p class="sec-sub">Every song is fully custom, written from your story. No name-swap templates, ever.</p>
+    <div class="tiers">
+      <div class="card tier">
+        <h3>The Song</h3>
+        <div class="price">$39</div>
+        <div class="when">Delivered within 24 hours</div>
+        <ul>
+          <li>Full custom song, 2 to 3 minutes</li>
+          <li>Written from your story and details</li>
+          <li>Your choice of style and mood</li>
+          <li>Private play page + MP3 download</li>
+          <li>Reaction video included</li>
+        </ul>
+        <button class="btn ghost open-order" data-tier="classic">Choose The Song</button>
+      </div>
+      <div class="card tier popular">
+        <div class="flag">MOST LOVED</div>
+        <h3>The Keepsake</h3>
+        <div class="price">$69</div>
+        <div class="when">Delivered within 24 hours</div>
+        <ul>
+          <li>Everything in The Song</li>
+          <li>A second version in a different style</li>
+          <li>Printable hand-lettered lyric sheet</li>
+          <li>Lyric video they can share</li>
+        </ul>
+        <button class="btn open-order" data-tier="deluxe">Choose The Keepsake</button>
+      </div>
+      <div class="card tier">
+        <h3>The Tonight</h3>
+        <div class="price">$89</div>
+        <div class="when">Delivered in about 3 hours</div>
+        <ul>
+          <li>Everything in The Keepsake</li>
+          <li>Front of June's queue</li>
+          <li>For birthdays that are, um, today</li>
+          <li>Looks like you planned it for weeks</li>
+        </ul>
+        <button class="btn ghost open-order" data-tier="rush">Choose The Tonight</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="june">
+    <div class="june">
+      <div class="portrait">
+        <img src="assets/june.jpg" alt="June with her guitar">
+      </div>
+      <div class="note">
+        <p class="hand">Hi, I'm June.</p>
+        <p>I wrote my first birthday song for my grandma's 80th. I was broke, she had everything she needed, and a card felt like giving up. So I put the story of her kitchen, her bad driving, and her famous peach cobbler into three verses and a chorus.</p>
+        <p>She cried before the first chorus ended. Then she made me play it for every person who visited her for a year.</p>
+        <p>That is the whole secret. It is not the melody. It is hearing your own life sung back to you by someone who clearly listened. My job is to listen to your story and make sure every song that leaves my desk sounds like it could only be about one person on earth.</p>
+        <p class="sig">June</p>
+        <div style="border-top:1px solid var(--line);margin-top:20px;padding-top:18px">
+          <div style="font-weight:800;font-size:14px">🎧 Another one from June's desk</div>
+          <div class="hint" style="margin:2px 0 8px">"The Secret Is Listening"</div>
+          <audio controls preload="none" style="width:100%" src="assets/the-secret-is-listening.mp3"></audio>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="guarantee">
+      <h2 class="sec-title" style="font-size:28px">The Happy Tears Guarantee</h2>
+      <p class="sec-sub" style="margin:10px auto 0">If the song does not land, June rewrites it. Still not right? Full refund, and you keep the song anyway. The risk is on us, the tears are on them.</p>
+    </div>
+  </section>
+
+  <section id="faq">
+    <span class="eyebrow">Questions</span>
+    <h2 class="sec-title">Fair questions, honest answers.</h2>
+    <details><summary>How is this so fast? Custom song companies take weeks.</summary><p>June writes your lyrics herself from the story you share, then produces the track with modern studio tools instead of booking session musicians for every order. She listens to and approves every song before it ships. The speed comes from the tools. The heart comes from your story, and that part never gets automated.</p></details>
+    <details><summary>Will it feel personal, or like a template with a name dropped in?</summary><p>There are no templates. Your song is written from your answers, so the lyrics carry your actual details: the nickname, the town, the story from that one summer. If the details you gave us are not in the song, that is a rewrite on us.</p></details>
+    <details><summary>What if I have no idea what style to pick?</summary><p>Pick the artist or vibe they already love and June takes it from there. When in doubt, warm acoustic works for almost everyone over 40, and upbeat pop for almost everyone under it.</p></details>
+    <details><summary>How does the reaction video work? Is it sneaky?</summary><p>Not sneaky at all. When your person opens their song page, we ask them on screen if they would like to share their reaction with you while they listen. They can say no and just enjoy the song. If they say yes, they see themselves being recorded the whole time, review the video afterward, and choose to send it. Most people say yes. It is a lovely thing to give back.</p></details>
+    <details><summary>What do I actually get?</summary><p>A private page with their song that you can text or email on the big day, the MP3 to keep, the lyrics, and their reaction video if they record one. Keepsake orders also get a second version of the song, a printable lyric sheet, and a shareable lyric video.</p></details>
+    <details><summary>What if I need it TODAY?</summary><p>That is The Tonight tier. Order by early evening and June moves you to the front of the queue, about 3 hours door to door. Nobody will ever know you remembered this morning.</p></details>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div><span class="hand" style="font-size:22px">Songs by June</span><br>A song about them, in their hands by tonight.</div>
+    <div>
+      <a href="mailto:june@songsbyjune.com">june@songsbyjune.com</a><br>
+      <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ORDER FLOW -->
+<div id="order">
+  <div class="panel">
+    <button class="close" aria-label="Close">×</button>
+    <div class="progress"><span class="on"></span><span></span><span></span><span></span></div>
+
+    <div class="step on" data-step="0">
+      <h2 style="font-size:26px">Who is this song for?</h2>
+      <label>Their first name</label>
+      <input type="text" id="f-recipient" placeholder="Mom, Sarah, Big Mike...">
+      <label>They are your...</label>
+      <div class="pill-row" id="f-relationship">
+        <button class="pill">Mom</button><button class="pill">Dad</button><button class="pill">Partner</button>
+        <button class="pill">Best friend</button><button class="pill">Sister</button><button class="pill">Brother</button>
+        <button class="pill">Grandparent</button><button class="pill">My kid</button><button class="pill">Someone else</button>
+      </div>
+      <label>The occasion</label>
+      <input type="text" id="f-occasion" placeholder="Her 60th birthday, his 30th, just their birthday...">
+    </div>
+
+    <div class="step" data-step="1">
+      <h2 style="font-size:26px">Tell June the good stuff.</h2>
+      <p class="hint" style="margin-top:6px">This is where the song comes from. The more specific, the more tears.</p>
+      <label>What do you love most about them?</label>
+      <textarea id="f-love" placeholder="She raised three of us on her own and still laughs louder than anyone in the room..."></textarea>
+      <label>Details only your family or friends would know</label>
+      <textarea id="f-details" placeholder="Nicknames, inside jokes, their famous dish, the story everyone retells, their catchphrase..."></textarea>
+    </div>
+
+    <div class="step" data-step="2">
+      <h2 style="font-size:26px">What should it sound like?</h2>
+      <label>Style</label>
+      <div class="pill-row" id="f-genre">
+        <button class="pill">Warm acoustic</button><button class="pill">Country</button><button class="pill">Upbeat pop</button>
+        <button class="pill">Classic rock</button><button class="pill">Smooth R&B</button><button class="pill">Playful rap</button>
+      </div>
+      <label>Mood</label>
+      <div class="pill-row" id="f-mood">
+        <button class="pill">Make them cry</button><button class="pill">Make them laugh</button><button class="pill">Both, please</button>
+      </div>
+      <label>Anything else June should know? <span style="font-weight:400;color:var(--ink-soft)">(optional)</span></label>
+      <textarea id="f-notes" placeholder="Please mention her dog Biscuit. Avoid mentioning the divorce."></textarea>
+    </div>
+
+    <div class="step" data-step="3">
+      <h2 style="font-size:26px">Almost there.</h2>
+      <label>Pick your package</label>
+      <div class="tier-pick" data-tier="classic"><div><b>The Song</b><span>Custom song + reaction video · within 24h</span></div><div class="p">$39</div></div>
+      <div class="tier-pick on" data-tier="deluxe"><div><b>The Keepsake ♥</b><span>+ second version, lyric sheet, lyric video</span></div><div class="p">$69</div></div>
+      <div class="tier-pick" data-tier="rush"><div><b>The Tonight</b><span>Everything, delivered in about 3 hours</span></div><div class="p">$89</div></div>
+      <label>Your name</label>
+      <input type="text" id="f-buyer">
+      <label>Your email <span style="font-weight:400;color:var(--ink-soft)">(where the song and reaction land)</span></label>
+      <input type="email" id="f-email">
+      <div id="referral-note" class="hint" style="display:none">🎁 $10 friend discount applied at checkout.</div>
+      <div class="hint" style="margin-top:14px">Payment is handled securely by Stripe. You will get your private song page by email, and you hear the song before they do.</div>
+    </div>
+
+    <div class="stepnav">
+      <button class="btn ghost" id="back" style="visibility:hidden">Back</button>
+      <button class="btn" id="next">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://bukgitgwwmzdjibekmzb.supabase.co/functions/v1';
+const state = { step: 0, tier: 'deluxe', relationship: '', genre: '', mood: '', referral: null };
+
+const qs = new URLSearchParams(location.search);
+if (qs.get('code')) {
+  state.referral = qs.get('code').toUpperCase();
+  document.getElementById('referral-note').style.display = 'block';
+}
+
+const order = document.getElementById('order');
+document.querySelectorAll('.open-order').forEach(b => b.addEventListener('click', e => {
+  e.preventDefault();
+  if (b.dataset.tier) setTier(b.dataset.tier);
+  order.classList.add('open');
+}));
+order.querySelector('.close').addEventListener('click', () => order.classList.remove('open'));
+
+function pillGroup(id, key) {
+  document.querySelectorAll('#' + id + ' .pill').forEach(p => p.addEventListener('click', () => {
+    document.querySelectorAll('#' + id + ' .pill').forEach(x => x.classList.remove('on'));
+    p.classList.add('on');
+    state[key] = p.textContent;
+  }));
+}
+pillGroup('f-relationship', 'relationship');
+pillGroup('f-genre', 'genre');
+pillGroup('f-mood', 'mood');
+
+function setTier(t) {
+  state.tier = t;
+  document.querySelectorAll('.tier-pick').forEach(x => x.classList.toggle('on', x.dataset.tier === t));
+}
+document.querySelectorAll('.tier-pick').forEach(x => x.addEventListener('click', () => setTier(x.dataset.tier)));
+
+const steps = document.querySelectorAll('.step');
+const dots = document.querySelectorAll('.progress span');
+const back = document.getElementById('back');
+const next = document.getElementById('next');
+
+function show(n) {
+  state.step = n;
+  steps.forEach(s => s.classList.toggle('on', +s.dataset.step === n));
+  dots.forEach((d, i) => d.classList.toggle('on', i <= n));
+  back.style.visibility = n === 0 ? 'hidden' : 'visible';
+  next.textContent = n === 3 ? 'Write their song →' : 'Next';
+}
+back.addEventListener('click', () => show(state.step - 1));
+next.addEventListener('click', async () => {
+  if (state.step === 0 && !document.getElementById('f-recipient').value.trim()) {
+    return alert('Tell us their name first.');
+  }
+  if (state.step < 3) return show(state.step + 1);
+
+  const buyer = document.getElementById('f-buyer').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  if (!buyer || !email.includes('@')) return alert('We need your name and a real email to send the song to.');
+
+  next.disabled = true;
+  next.textContent = 'Opening secure checkout...';
+  try {
+    const r = await fetch(API + '/bday-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tier: state.tier,
+        buyer_name: buyer,
+        buyer_email: email,
+        recipient_name: document.getElementById('f-recipient').value.trim(),
+        relationship: state.relationship,
+        genre: state.genre,
+        referral_code: state.referral,
+        brief: {
+          occasion: document.getElementById('f-occasion').value,
+          love: document.getElementById('f-love').value,
+          details: document.getElementById('f-details').value,
+          mood: state.mood,
+          notes: document.getElementById('f-notes').value
+        }
+      })
+    });
+    const data = await r.json();
+    if (data.url) { location.href = data.url; return; }
+    throw new Error(data.error || 'unknown');
+  } catch (err) {
+    alert('Something hiccuped on our end. Please try again in a moment.');
+    next.disabled = false;
+    next.textContent = 'Write their song →';
+  }
+});
+</script>
+</body>
+</html>
